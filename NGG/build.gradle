@@ -12,6 +12,8 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags ""
+                arguments "-DUSE_EXTRA_OPTIMIZATIONS=ON",
+                          "-DLTO_FLAG=-flto"
             }
         }
 
