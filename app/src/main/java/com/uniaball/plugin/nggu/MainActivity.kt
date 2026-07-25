@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
     private var hasAllFilesPermission = false
         set(value) {
             if (ANGLESwitcher != null) {
-                // ANGLESwitcher!!.isEnabled = value
+                ANGLESwitcher!!.isEnabled = value
             }
             field = value
         }
@@ -140,38 +140,23 @@ class MainActivity : ComponentActivity() {
 
         val settingText2 = MaterialTextView(this).apply {
             text = "启用 ANGLE"
-            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
             gravity = Gravity.CENTER
         }
 
         ANGLESwitcher = MaterialSwitch(this).apply {
             isChecked = false
-            isEnabled = false
-            // isEnabled = hasAllFilesPermission
-            // setOnCheckedChangeListener { _, _ ->
-            //     NGGConfigEditor.configSetInt("enableANGLE", if (isChecked) 1 else 0)
-            //     NGGConfigEditor.configSaveToFile()
-            //     refreshConfig()
-            // }
+            isEnabled = hasAllFilesPermission
+            setOnCheckedChangeListener { _, _ ->
+                NGGConfigEditor.configSetInt("enableANGLE", if (isChecked) 1 else 0)
+                NGGConfigEditor.configSaveToFile()
+                refreshConfig()
+            }
         }
 
         horizontalInnerLayout.addView(settingText1.apply { setPadding(0,0,8.dpToPx(),0) })
         horizontalInnerLayout.addView(ANGLESwitcher?.apply { setPadding(8.dpToPx(),0,8.dpToPx(),0) })
         horizontalInnerLayout.addView(settingText2.apply { setPadding(8.dpToPx(),0,0,0) })
-
-        val angleDisabledHint = MaterialTextView(this).apply {
-            text = "ANGLE 在当前版本被禁用 (x7)"
-            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
-            setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.GRAY))
-            gravity = Gravity.CENTER
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 8.dpToPx()
-            }
-        }
 
         val divider2 = MaterialDivider(this).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -257,7 +242,6 @@ class MainActivity : ComponentActivity() {
             addView(byTextView)
             addView(divider)
             addView(horizontalInnerLayout)
-            addView(angleDisabledHint)
             addView(divider2)
             addView(goToWebsiteButton.apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -597,16 +581,16 @@ class MainActivity : ComponentActivity() {
         if(hasAllFilesPermission) {
             NGGConfigEditor.configRefresh()
             var changed = false
-            // val ANGLE = NGGConfigEditor.configGetInt("enableANGLE")
-            // ANGLESwitcher?.isChecked = ANGLE == 1
+            val ANGLE = NGGConfigEditor.configGetInt("enableANGLE")
+            ANGLESwitcher?.isChecked = ANGLE == 1
 
-            // if (ANGLE != 0 && ANGLE != 1) {
-            //     changed = true
-            //     NGGConfigEditor.configSetInt("enableANGLE", 1)
-            // }
-            // if (changed) {
-            //     NGGConfigEditor.configSaveToFile()
-            // }
+            if (ANGLE != 0 && ANGLE != 1) {
+                changed = true
+                NGGConfigEditor.configSetInt("enableANGLE", 1)
+            }
+            if (changed) {
+                NGGConfigEditor.configSaveToFile()
+            }
         }
     }
 }
