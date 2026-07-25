@@ -1,4 +1,4 @@
-package com.bzlzhh.plugin.ngg
+package com.uniaball.plugin.nggu
 
 import NGGConfigEditor
 import android.Manifest
@@ -17,10 +17,14 @@ import android.provider.Settings
 import android.view.*
 import android.util.TypedValue
 import android.widget.*
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-//import com.bzlzhh.plugin.ngg.BuildConfig.useANGLE
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+//import com.uniaball.plugin.nggu.BuildConfig.useANGLE
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -29,14 +33,15 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.graphics.drawable.GradientDrawable
 import androidx.core.graphics.ColorUtils
 
-class MainActivity : Activity() {
-    private val websiteUrl = "https://ng-gl4es.bzlzhh.top"
-    private val markdownFileUrl = "https://raw.githubusercontent.com/BZLZHH/NG-GL4ES/main/README.md"
+class MainActivity : ComponentActivity() {
+    private val websiteUrl = "https://github.com/Uniaball/NG-GL4ES"
+    private val markdownFileUrl = "https://raw.githubusercontent.com/Uniaball/NG-GL4ES/main/README.md"
     
     private val REQUEST_CODE_PERMISSION = 0x00099
     private val REQUEST_CODE = 12
@@ -62,6 +67,8 @@ class MainActivity : Activity() {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        DynamicColors.applyToActivityIfAvailable(this)
         super.onCreate(savedInstanceState)
 
         checkPermission()
@@ -77,7 +84,7 @@ class MainActivity : Activity() {
         }
 
         val kryptonTextView = MaterialTextView(this).apply {
-            text = "Krypton Wrapper"
+            text = "Krypton Wrapper-U"
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_HeadlineLarge)
             gravity = Gravity.CENTER
             setTypeface(typeface, Typeface.BOLD)
@@ -97,8 +104,15 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }
 
+        val basedOnTextView = MaterialTextView(this).apply {
+            text = "Based on Krypton Wrapper 0.4.5"
+            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
+            setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.GRAY))
+            gravity = Gravity.CENTER
+        }
+
         val byTextView = MaterialTextView(this).apply {
-            text = "By BZLZHH"
+            text = "By BZLZHH & Uniaball"
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
             gravity = Gravity.CENTER
         }
@@ -147,7 +161,7 @@ class MainActivity : Activity() {
         horizontalInnerLayout.addView(settingText2.apply { setPadding(8.dpToPx(),0,0,0) })
 
         val angleDisabledHint = MaterialTextView(this).apply {
-            text = "ANGLE 在当前版本被禁用，后续可能修复 (x7)"
+            text = "ANGLE 在当前版本被禁用 (x7)"
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
             setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.GRAY))
             gravity = Gravity.CENTER
@@ -239,6 +253,7 @@ class MainActivity : Activity() {
         layout.apply {
             addView(kryptonTextView)
             addView(releaseTextView)
+            addView(basedOnTextView)
             addView(byTextView)
             addView(divider)
             addView(horizontalInnerLayout)
@@ -262,6 +277,14 @@ class MainActivity : Activity() {
         scrollView.addView(layout)
         setContentView(scrollView)
 
+        ViewCompat.setOnApplyWindowInsetsListener(scrollView) { view, windowInsets ->
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
         refreshConfig()
     }
 
@@ -272,7 +295,7 @@ class MainActivity : Activity() {
             } else {
                 MaterialAlertDialogBuilder(this)
                     .setTitle("权限请求")
-                    .setMessage("程序需要获取访问所有文件权限才能正常使用 Krypton Wrapper 设置功能。是否授予？")
+                    .setMessage("程序需要获取访问所有文件权限才能正常使用 Krypton Wrapper-U 设置功能。是否授予？")
                     .setPositiveButton("是") { _: DialogInterface?, _: Int ->
                         val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                         intent.data = Uri.parse("package:" + this.packageName)
@@ -331,7 +354,7 @@ class MainActivity : Activity() {
         if (!isVulkanSupported(context)) {
             AlertDialog.Builder(context)
                 .setTitle("警告")
-                .setMessage("检测到设备不支持 Vulkan! 这意味着此设备无法使用带有 ANGLE 的 Krypton Wrapper!\n\n您应当前往官网，下载\"NO-ANGLE\"版本。")
+                .setMessage("检测到设备不支持 Vulkan! 这意味着此设备无法使用带有 ANGLE 的 Krypton Wrapper-U!\n\n您应当前往官网，下载\"NO-ANGLE\"版本。")
                 .setPositiveButton("前往官网") { _: DialogInterface?, _: Int ->
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
                     startActivity(intent)
@@ -406,7 +429,7 @@ class MainActivity : Activity() {
         //    if (useANGLE)
         //        AlertDialog.Builder(this)
         //            .setTitle("警告")
-        //            .setMessage("检测到设备的 GPU 是 Adreno 740! Adreno 740 可能在使用了 ANGLE 的 Krypton Wrapper 的中出现严重渲染错误!\n\n您应当前往官网，下载\"NO-ANGLE\"版本。")
+        //            .setMessage("检测到设备的 GPU 是 Adreno 740! Adreno 740 可能在使用了 ANGLE 的 Krypton Wrapper-U 的中出现严重渲染错误!\n\n您应当前往官网，下载\"NO-ANGLE\"版本。")
         //            .setPositiveButton("前往官网") { _: DialogInterface?, _: Int ->
         //                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
         //                startActivity(intent)
@@ -421,7 +444,7 @@ class MainActivity : Activity() {
         //    if (!useANGLE)
         //     AlertDialog.Builder(this)
         //         .setTitle("警告")
-        //         .setMessage("检测到设备的 GPU 不是 Adreno 740! 非 Adreno 740 的设备在没有使用 ANGLE 的 Krypton Wrapper 的中出现少部分光影渲染错误，且效率更低!\n\n您应当前往官网，下载没有标注\"NO-ANGLE\"版本。")
+        //         .setMessage("检测到设备的 GPU 不是 Adreno 740! 非 Adreno 740 的设备在没有使用 ANGLE 的 Krypton Wrapper-U 的中出现少部分光影渲染错误，且效率更低!\n\n您应当前往官网，下载没有标注\"NO-ANGLE\"版本。")
         //         .setPositiveButton("前往官网") { _: DialogInterface?, _: Int ->
         //             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
         //             startActivity(intent)

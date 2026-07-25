@@ -1,9 +1,11 @@
-NGG-FCLRendererPlugin
+NGG-FCLRendererPlugin (Krypton Wrapper-U)
 ====
 
-This is the **plugin application** for *Fold Craft Launcher*, *Zalith Launcher* and *Pojav·Glow·Worm* to use Krypton Wrapper.
+This is the **plugin application** for *Fold Craft Launcher*, *Zalith Launcher* and *Pojav·Glow·Worm* to use **Krypton Wrapper-U**.
 
-If you want to learn more about **Krypton Wrapper**, please see [NG-GL4ES](https://github.com/BZLZHH/NG-GL4ES).
+**Krypton Wrapper-U** is a fork of Krypton Wrapper by **Uniaball**, based on **Krypton Wrapper 0.4.5**.
+
+If you want to learn more about **Krypton Wrapper-U**, please see [NG-GL4ES](https://github.com/Uniaball/NG-GL4ES).
 
 License
 ====
@@ -35,4 +37,4 @@ Here are the third-party components that this plugin application is using (**NOT
 
 What's more, this project also mentions [ANGLE](https://github.com/google/angle) by **Google**, but it does **NOT** provide it.
 
-**(See [NG-GL4ES](https://github.com/BZLZHH/NG-GL4ES) to check what third-party components Krypton Wrapper is using)**
+**(See [NG-GL4ES](https://github.com/Uniaball/NG-GL4ES) to check what third-party components Krypton Wrapper-U is using)**
